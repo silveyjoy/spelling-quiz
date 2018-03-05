@@ -15,6 +15,7 @@ spelling = {1:['acceptable','acceptible'], \
 7:['amateur','amature']}
 
 gamePoints = 0
+totalWordsMissed = 0
 gameState = True
 
 def playRound():
@@ -62,7 +63,6 @@ def playRound():
         for i in thisRound:
             a = randomWrongChoice()
             currentWords[a].append(spelling[i][a])
-        print (currentWords)
             
         guessWords = currentWords[0] + currentWords[1]
         mappingKey = randomSequence(4)
@@ -74,7 +74,7 @@ def playRound():
             mappingList[i-1] = guessWords[0]
             guessWords = guessWords[1:]
     
-        print (mappingList)
+        print ('\n', mappingList)
         print ('Please type the numbers of the words spelled incorrectly, separated by commas. \n')
         print ('If no words are spelled incorrectly, please enter "0": ')
         ans = input('-->')
@@ -88,31 +88,37 @@ def playRound():
             
         pts = 0
         wordsRight = 0
-        wordsMissed = len(currentWords[1])
+        flag = False
         
         if ans[0] == 0:
-            x = 1
+            x = 0
             while x < 5:
                 if mappingList[x] in currentWords[0]:
-                    pts += 5
                     x += 1
                 else:
-                    pts = 0
-                    print ('Oops! Looks like you missed an error.')
+                    flag = True
                     x = 5
         else:
             y = len(ans) - 1
             while y > -1:
                 if mappingList[(ans[y] - 1)] in currentWords[1]:
-                    print ('Points for correct guess: +5')
                     pts += 5
                     wordsRight += 1
                     y -= 1
                 else:
-                    print ('Incorrect guess.')
                     y = -1
-        print ("Number of words missed: ", (wordsMissed - wordsRight))
-        print ("Total points this round: ", pts)
+        
+        if wordsRight == len(currentWords[1]):
+            pts = 20
+        else:
+            pts = 0
+            if flag:
+                print  ('Oops! Looks like you missed an error.')
+            else:
+                print ("Sorry, not quite!")
+        wordsMissed = len(currentWords[1]) - wordsRight
+        print ("Number of words missed: ", wordsMissed)
+        print ("Points this round: ", pts)
         return pts
     return initializeRound()
     
