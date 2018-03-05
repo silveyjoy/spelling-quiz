@@ -1,5 +1,6 @@
 """
 Created on Fri Mar  2 15:39:47 2018
+version 1.0
 
 @author: jsilvey
 """
