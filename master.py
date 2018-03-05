@@ -1,3 +1,8 @@
+"""
+Created on Fri Mar  2 15:39:47 2018
+
+@author: jsilvey
+"""
 import random
 
 spelling = {1:['acceptable','acceptible'], \
@@ -8,8 +13,10 @@ spelling = {1:['acceptable','acceptible'], \
 6:['a lot','alot'], \
 7:['amateur','amature']}
 
-def playRound():     
-    gamePoints = 0   
+gamePoints = 0
+gameState = True
+
+def playRound():       
     def randomSequence(length):
         """
         Takes an int as argument for length of a range of values. 
@@ -38,7 +45,7 @@ def playRound():
         chosen words with a key signifying whether or not the word is spelled correctly.
         """
         thisRound = randomSequence(len(spelling))
-        #thisRound akes the master dict as argument and returns a tuple of four randomly
+        #thisRound takes the master dict as argument and returns a tuple of four randomly
         #selected non-repeating digits. These digits will be indexed into the
         #master dict to pull out four words.
         def randomWrongChoice():
@@ -46,7 +53,7 @@ def playRound():
             return int(a)
   
         currentWords = {}
-        #currentWords isthe dict mapping four randomly chosen words to 0 if 
+        #currentWords is the dict mapping four randomly chosen words to 0 if 
         #spelled correctly or to 1 if spelled incorrectly
         goodList = []
         badList = []
@@ -74,17 +81,65 @@ def playRound():
             mappingDict[i] = mappingList[0]
             mappingList = mappingList[1:]
     
-        print mappingDict
-        ans = [int(raw_input('Please type the numbers of the words spelled incorrectly \
-        separated by commas. If no words are spelled incorrectly, please enter "0": '))]
+        print ('\n')
+        print (mappingDict)
+        print ('Please type the numbers of the words spelled incorrectly separated by a commas. \n')
+        print ('If no words are spelled incorrectly, please enter "0": ')
+        ans = input('----->')
+        
+        ans = ans.split(',')
+        for digit in range(len(ans)):
+            ans[digit] = int(ans[digit])
+            
         pts = 0
-        if ans == 0:
+        wordsRight = 0
+        wordsMissed = len(badList)
+        
+        if ans[0] == 0:
             x = 1
             while x < 5:
                 if mappingDict[x] in goodList:
-                    x += 1
                     pts += 5
+                    x += 1
                 else:
-                    x = 5
                     pts = 0
-                    print 'Oops! Looks like you missed an error.'
+                    print ('Oops! Looks like you missed an error.')
+                    x = 5
+        else:
+            y = (len(ans) - 1)
+            while y > -1:
+                if mappingDict[ans[y]] in badList:
+                    print ('Points for correct guess: +5')
+                    pts += 5
+                    wordsRight += 1
+                    y -= 1
+                else:
+                    print ('Incorrect guess.')
+                    pts = 0
+                    y = -1
+            print ("Number of words missed: ", (wordsMissed - wordsRight))
+                
+                
+        print ("Total points this round: ", pts)
+        return pts
+    
+    return initializeRound()
+    
+def again():
+    prompting = True
+    while prompting:
+        decision = input('Would you like to play again? Type "Y" or "N": ').upper()
+        if decision == "Y":
+            return True
+        elif decision == "N":
+            return False
+        else:
+            print ('Please enter a valid answer.')
+            
+    
+while gameState:
+    gamePoints += playRound()
+    print ('Total points this game: ', gamePoints)
+    game = again()
+    if not game:
+        gameState = False
